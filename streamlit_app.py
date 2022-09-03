@@ -26,4 +26,8 @@ streamlit.header("Fruityvice Fruit Advice!")
 fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
 streamlit.text(fruityvice_response.json())
 
+# It's necesary to normalize the response 
+fruityvice_normalized= pandas.json_normalized(fruityvice_response.json())
+# Once normalized, it's necessry to present in the screen in an frame 
+streamlit.dataframe(fruityvice_normalized)
 
