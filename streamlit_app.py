@@ -1,5 +1,4 @@
 import streamlit
-import snowflake.connector
 
 streamlit.title('My Mom New Healthy Dinner')
 streamlit.header('Breakfast Favorites')
@@ -33,6 +32,15 @@ fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+fruit_cho
 
 # It's necesary to normalize the response 
 fruityvice_normalized= pandas.json_normalize(fruityvice_response.json())
+
+
+import snowflake.connector
+my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+my_cur = my_cnx.cursor()
+my_cur.execute("SELECT CURRENT_USER(), CURRENT_ACCOUNT(), CURRENT_REGION()")
+my_data_row = my_cur.fetchone()
+streamlit.text("Hello from Snowflake:")
+streamlit.text(my_data_row)
 # Once normalized, it's necessry to present in the screen in an frame 
 streamlit.dataframe(fruityvice_normalized)
 
