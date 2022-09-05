@@ -20,24 +20,25 @@ fruits_selected = streamlit.multiselect("Pick some fruits:", list(my_fruit_list.
 fruits_to_show= my_fruit_list.loc[fruits_selected]
 
 #Display the table on the page
-#streamlit.dataframe(my_fruit_list)
+
 streamlit.dataframe(fruits_to_show)
 
 #New section to display fruitvice api response
-#import requests
+
 streamlit.header("Fruityvice Fruit Advice!")
 
-fruit_choice = streamlit.text_input('What fruit would you like information about?','Kiwi')
-streamlit.write('The user entered ', fruit_choice)
+try:
+ fruit_choice = streamlit.text_input('What fruit would you like information about?')
+ if not fruit_choice:
+    streamlit.error("Please select a fruit to get information.¨)
+ else:
+    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+fruit_choice) 
+    fruityvice_normalized= pandas.json_normalize(fruityvice_response.json())
+    streamlit.dataframe(fruityvice_normalized)
 
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+fruit_choice)
-#streamlit.text(fruityvice_response.json())
-
-# It's necesary to normalize the response 
-fruityvice_normalized= pandas.json_normalize(fruityvice_response.json())
-# Once normalized, it's necessry to present in the screen in an frame 
-streamlit.dataframe(fruityvice_normalized)
-
+except URLError as e:
+ streamlit.error()
+                    
 streamlit.stop()
 
 #import snowflake.connector
